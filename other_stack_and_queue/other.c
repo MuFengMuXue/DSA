@@ -103,6 +103,15 @@ int dequeue(LinkedQueue* q,int* v){
     return OK;
 }
 
+static int priority(char op){
+    switch (op)
+    {
+    case '+' : case '-': return 1;
+    case '*' : case '/': return 2;    
+    default: return 0;
+    }
+}
+
 //进制转换
 int convert(int n,int b){
     NodeS* stack = init_stack();
@@ -198,5 +207,51 @@ void maze(int row,int col){
     free(maze);
     free(visited);
 }
+
+void bracket_match(){
+    char str[256];
+    scanf("%s",str);
+    NodeS* stack = init_stack();
+    if(stack==NULL){
+        printf("ERR");
+        return;
+    }
+    for(int i = 0;str[i]!='\0';i++){
+        char ch = str[i];
+        if(ch == '('||ch == '['||ch=='{'){
+            push(stack,ch);
+        }
+        else if(ch==')'||ch==']'||ch=='}'){
+            if(is_empty_stack(stack)){
+                break;
+            }
+            int topChar;
+            get_top_stack(stack,&topChar);
+            char left = (char)topChar;
+            if(left == '('&&ch == ')' || 
+               left == '['&&ch==']' ||
+               left == '{'&&ch=='}'){
+                int tmp;
+                pop(stack,&tmp); 
+            }
+        }
+        else{
+            break;
+        }
+    }
+    if(str=='\0'&&is_empty_stack(stack)){
+        printf("匹配成功");
+    }
+    else{
+        printf("匹配失败");
+    }
+    while(is_empty_stack(stack)){
+        int tmp;
+        pop(stack,&tmp);
+    }
+    free(str);
+    return;
+}
+
 
 
